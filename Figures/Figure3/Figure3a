@@ -1,0 +1,9 @@
+library(readr)
+swift <- read_csv("swift.csv")
+swift$Status <-factor(swift$Status, levels = c("Healthy", "Borderline", "Sick"))
+swift$Treatment <-factor(swift$Treatment, levels = c("Drug", "Plant+Drug", "Plant"))
+g <- ggplot(swift, aes(x=Frequency, y=Treatment, fill=Status)) +
+  geom_bar(stat="identity", position=position_dodge())+scale_fill_manual(values = c(Sick = "#D61F26", Borderline = "#FFCB05",
+                                                                                    Healthy = "#DBE8F7"))+
+  ThemeEM_XY+labs(x = "Proportion (%)", y = "Intervention & Status pre-intervention")
+g
