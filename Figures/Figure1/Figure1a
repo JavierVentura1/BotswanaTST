@@ -1,0 +1,42 @@
+library(lubridate)
+library(ggplot2)
+library(plyr)
+library(dplyr)
+library(data.table)
+library(magrittr)
+library(writexl)
+library(readr)
+library(Hmisc)
+library(corrplot)
+library(ggpubr)
+library(survival)
+library(survminer)
+library(ggalluvial)
+library(grid)
+library(gridExtra)
+library(multcompView)
+library(tseries)
+library(glmmTMB)
+library(bbmle)
+library(DHARMa)
+library(emmeans)
+library(car)
+library(carData)
+library(pracma)
+ThemeEM_XY <- theme_bw() +
+  theme(strip.text.x = element_text(size = 12, face = "bold"),
+        strip.text.y = element_text(size = 12, face = "bold"),
+        axis.title.x = element_text(size=14, face = "bold"),
+        axis.title.y = element_text(size=14, face = "bold"),
+        axis.text = element_text(size=10),
+        legend.title = element_text(size=14, face = "bold"),
+        legend.text = element_text(size=12),
+        panel.grid.major = element_line(colour = "NA", size = 0.2),
+        panel.grid.minor = element_line(colour = "NA", size = 0.1),
+        strip.background = element_rect(color="black", fill="NA", size=0.5, linetype="solid"),
+        panel.border = element_rect(linetype = "blank", fill = NA),
+        axis.line = element_line(size = 0.5, colour = "black"))
+d1 <- read_csv("d1.csv")
+d1$time2 <-factor(d1$time2, levels = c("Jan-20", "fe-20", "mr-20","Apr-20","my-20", "jn-20","jl-20","Aug-20","se-20","oc-20","nv-20","Dec-20", "Jan-21", "fe-21", "mr-21","Apr-21","my-21"))
+ggplot(d1, aes(x = time2, y = Humidity)) +                            # line plot
+  geom_line(size = 1.5, color="green", group = 1)
