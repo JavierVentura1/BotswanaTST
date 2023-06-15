@@ -1,0 +1,25 @@
+library(lubridate)
+library(ggplot2)
+library(plyr)
+library(dplyr)
+library(survival)
+library(survminer)
+library(ggalluvial)
+library(readr)
+all8 <- read_csv("all8.csv")
+all8$Status <-factor(all8$Status, levels = c("Sick","Borderline", "Healthy", "Grazing","Sold","Stolen" ,"Died","End"))
+class(all8$Status)
+class(all8$Tag)
+ggplot(all8,
+       aes(x = Visit, stratum = Status, alluvium = Tag,
+           fill = Status)) +
+  geom_lode() + geom_flow() +
+  geom_stratum(stat = "stratum", alpha = 2) +
+  facet_grid(TST ~.) +
+  ylab("Percentage (%)")+
+  scale_x_continuous(limits = c(0,17),breaks = c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16))+
+  geom_text(stat="stratum",size=3, aes(label = round(after_stat(prop), 2))) +ThemeEM_XY+
+  scale_fill_manual(values = c(Sick = "#D61F26", Borderline = "#FFCB05",
+                               Healthy = "#DBE8F7",Grazing = "#009771", Sold = "#DEC1A3", Stolen = "#D3226A", Died= "#642E91",End="#808080"))
+
+
