@@ -1,0 +1,9 @@
+library(readr)
+Mana <- read_csv("Mana.csv")
+Mana$Management<-factor(Mana$Management, levels = c("Whole","DTST","PDTST"))
+inter<-ggplot(data = Mana,aes(x=Management, y= Frequency, fill=Management))+
+  geom_bar(stat="identity", position = "dodge")+scale_fill_manual(values = c(Whole= "#FFFFFF",DTST= "#000000", PDTST= "#06A64F"),name="Group:",
+                                                                  breaks=c("Whole","DTST", "PDTST"),
+                                                                  labels=c("Whole herd","TST-Drug", "TST-Plant&Drug"))+
+  labs(x = "Deworming management")+ThemeEM_XY
+inter
