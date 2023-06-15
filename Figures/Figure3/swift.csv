@@ -1,0 +1,10 @@
+Treatment,Frequency,Status,TST-Group
+Plant,30.6,Healthy,Plant
+Plant,58.8,Borderline,Plant
+Plant,10.6,Sick,Plant
+Plant+Drug,12.2,Healthy,Plant
+Plant+Drug,60.9,Borderline,Plant
+Plant+Drug,26.9,Sick,Plant
+Drug,6.2,Healthy,Drug
+Drug,43.4,Sick,Drug
+Drug,50.4,Borderline,Drug
