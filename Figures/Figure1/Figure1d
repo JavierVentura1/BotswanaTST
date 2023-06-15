@@ -1,0 +1,45 @@
+library(ggplot2)
+library(plyr)
+library(dplyr)
+library(data.table)
+library(magrittr)
+library(writexl)
+library(readr)
+library(Hmisc)
+library(corrplot)
+library(ggpubr)
+library(survival)
+library(survminer)
+library(ggalluvial)
+library(grid)
+library(gridExtra)
+library(multcompView)
+library(tseries)
+library(glmmTMB)
+library(bbmle)
+library(DHARMa)
+library(emmeans)
+library(car)
+library(carData)
+library(pracma)
+ThemeEM_XY <- theme_bw() +
+  theme(strip.text.x = element_text(size = 12, face = "bold"),
+        strip.text.y = element_text(size = 12, face = "bold"),
+        axis.title.x = element_text(size=14, face = "bold"),
+        axis.title.y = element_text(size=14, face = "bold"),
+        axis.text = element_text(size=10),
+        legend.title = element_text(size=14, face = "bold"),
+        legend.text = element_text(size=12),
+        panel.grid.major = element_line(colour = "NA", size = 0.2),
+        panel.grid.minor = element_line(colour = "NA", size = 0.1),
+        strip.background = element_rect(color="black", fill="NA", size=0.5, linetype="solid"),
+        panel.border = element_rect(linetype = "blank", fill = NA),
+        axis.line = element_line(size = 0.5, colour = "black"))
+d <- read_csv("d.csv")
+d$time2 <-factor(d$time2, levels = c("Jan-20", "Fe-20", "ma-20","Ap-20","my-20", "Ju-20","July-20","Au-20","se-20","c-20","no-20","De-20", "Jan-21", "Fe-21", "ma-21","Ap-21","my-21"))
+ggplot(data=d, aes(x=time2, y=mean, fill = TST)) +
+  geom_bar(size = 1, stat="identity", position = "dodge")+
+  labs(x = "Time", y = "FEC (EPG x1000)")+scale_fill_manual(values = c("#000000", "#000000"))+
+  facet_grid(~TST)+
+  scale_y_continuous(breaks=c(0,250,500, 1000,1500,2000))+
+  ThemeEM_XY
