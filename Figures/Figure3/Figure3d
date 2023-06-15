@@ -1,0 +1,11 @@
+library(readr)
+grams <- read_csv("grams.csv")
+grams$Plant <-factor(grams$Plant, levels = c("Viscum rotundifolium", "Terminalia sericea"))
+grams$Treatment <-factor(grams$Treatment, levels = c("Whole herd", "PDTST"))
+grams1<-ggplot(data=grams, aes(x =Treatment, y=kg, fill =Plant))+
+  geom_bar(position= "stack", stat = "identity")+
+  labs(y = "Plant provided (year)", x = "Plant supplementation")+
+  annotate("text", x=1, y=8, label= "7.6 t") + 
+  annotate("text", x = 2, y=3.6, label = "3.4 t")+
+ThemeEM_XY
+grams1
