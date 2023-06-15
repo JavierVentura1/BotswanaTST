@@ -1,0 +1,30 @@
+library(ggplot2)
+library(plyr)
+library(dplyr)
+library(Hmisc)
+library(ggpubr)
+ThemeEM_XY <- theme_bw() +
+  theme(strip.text.x = element_text(size = 12, face = "bold"),
+        strip.text.y = element_text(size = 12, face = "bold"),
+        axis.title.x = element_text(size=14, face = "bold"),
+        axis.title.y = element_text(size=14, face = "bold"),
+        axis.text = element_text(size=10),
+        legend.title = element_text(size=14, face = "bold"),
+        legend.text = element_text(size=12),
+        panel.grid.major = element_line(colour = "NA", size = 0.2),
+        panel.grid.minor = element_line(colour = "NA", size = 0.1),
+        strip.background = element_rect(color="black", fill="NA", size=0.5, linetype="solid"),
+        panel.border = element_rect(linetype = "blank", fill = NA),
+        axis.line = element_line(size = 0.5, colour = "black"))
+library(readr)
+redbo <- read_csv("redbo.csv")
+redbo$Intervention <-factor(redbo$Intervention, levels = c("Pre", "Post"))
+ggpaired(redbo, x = "Intervention", y = "FECp",
+         color = "TST", line.color = "gray", line.size = 0.4, ylab = "FEC (EPG x 1000)", xlab = "Anthelmintic Intervention",
+         palette = c("#000000", "#06A64F"),name="TST:",
+         breaks=c("Drug", "Plant"),
+         labels=c("TST-Drug", "TST-Plant & Drug")) +
+  facet_wrap(~TST) +
+  scale_y_continuous(breaks=c(0,250,500, 1000,2000,3000,4000,5000,6000,7000,8000,9000,10000,11000,12000))+
+  stat_compare_means(paired = TRUE, vjust = 1)+
+  ThemeEM_XY 
