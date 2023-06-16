@@ -1,0 +1,83 @@
+library(lubridate)
+library(ggplot2)
+library(plyr)
+library(dplyr)
+library(data.table)
+library(magrittr)
+library(writexl)
+library(readr)
+library(Hmisc)
+library(corrplot)
+library(ggpubr)
+library(survival)
+library(survminer)
+library(ggalluvial)
+library(grid)
+library(gridExtra)
+library(multcompView)
+library(tseries)
+library(glmmTMB)
+library(bbmle)
+library(DHARMa)
+library(emmeans)
+library(car)
+library(carData)
+library(pracma)
+ThemeEM_XY <- theme_bw() +
+  theme(strip.text.x = element_text(size = 12, face = "bold"),
+        strip.text.y = element_text(size = 12, face = "bold"),
+        axis.title.x = element_text(size=14, face = "bold"),
+        axis.title.y = element_text(size=14, face = "bold"),
+        axis.text = element_text(size=10),
+        legend.title = element_text(size=14, face = "bold"),
+        legend.text = element_text(size=12),
+        panel.grid.major = element_line(colour = "NA", size = 0.2),
+        panel.grid.minor = element_line(colour = "NA", size = 0.1),
+        strip.background = element_rect(color="black", fill="NA", size=0.5, linetype="solid"),
+        panel.border = element_rect(linetype = "blank", fill = NA),
+        axis.line = element_line(size = 0.5, colour = "black"))
+allb$time2 <-factor(allb$time2, levels = c("Jan-20", "Feb-20", "Mar-20","May-20", "Jun-20","Jul-20","Aug-20","Sep-20","Oct-20","Nov-20","Dec-20", "Jan-21", "Feb-21", "Mar-21","Apr-21","May-21"))
+##Poisson
+wp0<-glmmTMB(Weight~Nasal+FAMACHA+BCS+DAG+Jaw+(1|Tag),allb,family=poisson)
+## Zero-inflated negative binomial model
+nb0<-glmmTMB(Weight~Nasal+FAMACHA+BCS+DAG+Jaw+(1|Tag),allb, family=nbinom2)
+###Negative binomial distribution
+n0<-glmmTMB(Weight~Nasal+FAMACHA+BCS+DAG+Jaw+(1|Tag),allb, family=nbinom1)
+##Gaussian
+g0<-glmmTMB(Weight~Nasal+FAMACHA+BCS+DAG+Jaw+(1|Tag),allb, family = gaussian)
+AICtab(wp0,nb0,n0,g0)
+summary(g0)
+#####Best model
+g3<-glmmTMB(Weight~Nasal+FAMACHA+BCS+DAG+Jaw+TST*Status+time2+(1|Tag),allb, family = gaussian)
+summary(g3)
+Anova(g3)
+
+###WeightPairwise
+####FAMACHA
+j1<-emmeans(g3,pairwise~FAMACHA, type="response",adjust="Tukey")
+multcomp::cld(j1$emmeans, alpha = 0.05, Letters = LETTERS,reversed=F)
+####Nasal
+j2<-emmeans(g3,pairwise~Nasal, type="response",adjust="Tukey")
+summary(j2)
+multcomp::cld(j2$emmeans, alpha = 0.05, Letters = LETTERS,reversed=TRUE)
+###BCS
+j3<-emmeans(g3,pairwise~BCS, type="response",adjust="Tukey")
+summary(j3)
+multcomp::cld(j3$emmeans, alpha = 0.05, Letters = LETTERS)
+###DAG
+j4<-emmeans(g3,pairwise~DAG, type="response",adjust="Tukey")
+summary(j4)
+multcomp::cld(j4$emmeans, alpha = 0.05, Letters = LETTERS,reversed= TRUE)
+###Jaw
+j5<-emmeans(g3,pairwise~Jaw, type="response",adjust="Tukey")
+summary(j5)
+multcomp::cld(j5$emmeans, alpha = 0.05, Letters = LETTERS,reversed= TRUE)
+####Time
+j6<-emmeans(g3,pairwise~time2, type="response",adjust="Tukey")
+summary(j6)
+multcomp::cld(j6$emmeans, alpha = 0.05, Letters = LETTERS,reversed= T)
+####Interaction
+j7<-emmeans(g3,pairwise~TST|Status, type="response",adjust="Tukey")
+summary(j7)
+plot(j7, by=NULL, comparison = TRUE, adjust = "tukey", horizontal = TRUE,xlab="Body weight (kg)",ylab= "TST*Status")
+multcomp::cld(j7$emmeans, alpha = 0.05, Letters = LETTERS,reversed= T)
